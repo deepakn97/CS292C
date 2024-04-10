@@ -1,4 +1,10 @@
 \documentclass{jhwhw}
+\usepackage{adjustbox}
+\lstset{
+  basicstyle=\ttfamily\small, % Small font size for code
+  breaklines=true,            % Enable line breaking
+  postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space}, % Optional: mark where the line was broken
+}
 \author{Deepak Nathani}
 \title{CS292C Homework 1}
 \begin{document}
@@ -15,11 +21,11 @@
         \midrule
         {1: Dafny Installation} & {2} \\
         \midrule
-        {2: Minimum of 2D Array} & {0} \\
+        {2: Minimum of 2D Array} & {2} \\
         \midrule
-        {3: Binary Search} & {0} \\
+        {3: Binary Search} & {2} \\
         \midrule
-        {4: Buggy Binary Search} & {0} \\
+        {4: Buggy Binary Search} & {2} \\
         \midrule
         {5: Bubble Sort} & {0} \\
         \midrule
@@ -40,21 +46,21 @@ Once you're done, run Dafny on the demo file we covered during the tutorial, and
 
 \solution
 
-\begin{verbatim}
-    tutorials/01-dafny/demo.dfy(19,4): Error: a postcondition could not be proved 
-    on this return path
+\begin{lstlisting}
+    tutorials/01-dafny/demo.dfy(19,4): Error: a postcondition 
+    could not be proved on this return path
     |
  19 |     return b; // BUG!
     |     ^^^^^^
  
-    tutorials/01-dafny/demo.dfy(16,10): Related location: this is the postcondition 
-    that could not be proved
+    tutorials/01-dafny/demo.dfy(16,10): Related location: this is
+    the postcondition that could not be proved
     |
  16 |   ensures c >= a && c >= b && (c == a || c == b)
     |           ^^^^^^
  
  Dafny program verifier finished with 4 verified, 1 error
-\end{verbatim}
+\end{lstlisting}
 
 
 
@@ -62,14 +68,14 @@ Once you're done, run Dafny on the demo file we covered during the tutorial, and
 In min.dfy, you will find a Dafny method that finds the minimum of a 2D array. Your tasks are:
 
 \begin{enumerate}
-    \item State the correctness property of this method in terms of pre-condition(s) (using the requires keyword) and post-condition(s) (using the ensures keyword).
+\item State the correctness property of this method in terms of pre-condition(s) (using the requires keyword) and post-condition(s) (using the ensures keyword).
 
-    Your pre-condition(s) should allow Dafny to prove that there is no out-of-bound array access.
+Your pre-condition(s) should allow Dafny to prove that there is no out-of-bound array access.
 
-    \item Annotate each of the two loops with appropriate invariants that allow Dafny to verify the overall correctness of the method.
+\item Annotate each of the two loops with appropriate invariants that allow Dafny to verify the overall correctness of the method.
 
-    \textbf{Hint}
-    \begin{quote}
+\textbf{Hint}
+\begin{quote}
     The invariant for the outer should be very similar to your post-condition.
     For the inner loop, you may need to provide two different invariants:
     the first invariant talks about all elements from sub-arrays a[0] up to a[i-1] inclusive, and
@@ -83,6 +89,77 @@ In min.dfy, you will find a Dafny method that finds the minimum of a 2D array. Y
 \end{enumerate}
 
 \solution
+
+\part
+\textbf{Pre-Condition}: Check that the array length is greater than 1 and length of each subarray is greater than 1. This means that we require at least one element in the 2-D array.
+$$\text{requires } a.Length \geq 1 \land \forall i : 0 \leq i < a.Length \Rightarrow a[i].Length \geq 1$$
+\textbf{Post-Conditions}:
+\begin{enumerate}
+    \renewcommand{\labelenumi}{\arabic{enumi}.}
+    \item Ensure that the returned value is not larger than any other element in the array.
+    $$\text{ensures } \forall i, j : 0 \leq i < a.Length \land 0 \leq j < a[i].Length \Rightarrow a[i][j] \geq min $$
+    \item Ensure that the minimum value exists in the array.
+    $$\text{ensures } \exists i, j : 0 \leq i < a.Length \land 0 \leq j < a[i].Length \land a[i][j] = min$$
+\end{enumerate}
+\part
+\textbf{Outer Loop}:
+\begin{enumerate}
+    \renewcommand{\labelenumi}{\arabic{enumi}.}
+    \item Ensure that the current minimum value is not larger than any other element in the array we have scanned so far.
+    $$\text{ensures } \forall k, l : 0 \leq k < \text{current index} \land 0 \leq l < a[k].Length \Rightarrow min \leq a[k][l]$$
+    \item Ensure that the minimum value exists in the array.
+    $$\text{ensures } \exists k, l : 0 \leq k < a.Length \land 0 \leq l < a[k].Length \land a[k][l] = min$$
+\end{enumerate}
+\textbf{Inner Loop}:
+\begin{enumerate}
+    \renewcommand{\labelenumi}{\arabic{enumi}.}
+    \item Ensure that the current minimum value is not larger than any other element in the array we have scanned so far. We need two invariants for this. One to examine the subarray from $a[0]$ to $a[i-1]$ and then examine the current subarray $a[i]$ up to $j-1$ index.
+    $$\text{ensures } \forall k, l : (0 \leq k < i \land 0 \leq l < a[k].Length) \Rightarrow min \leq a[k][l]$$
+    $$\text{ensures } \forall l : (0 \leq l < j) \rightarrow a[i][l] \geq min$$
+    \item Ensure that the minimum value exists in the array.
+    $$\text{ensures } \exists k, l : (0 \leq k < a.Length \land 0 \leq l < a[k].Length) \land (a[k][l] = min)$$
+\end{enumerate}
+\newpage
+\part
+\begin{lstlisting}
+method min2D(a: array<array<int>>)
+returns (r: int)
+// assume this function can only be called with a non-empty array
+requires a.Length >= 1 && forall i :: 0 <= i < a.Length ==> a[i].Length >= 1
+
+// ensure r is no larger than any element in the array
+ensures forall i, j :: 0 <= i < a.Length && 0 <= j < a[i].Length ==> (r <= a[i][j])
+
+// ensure r exists in the array
+ensures exists i, j :: (0 <= i < a.Length && 0 <= j < a[i].Length) && (a[i][j] == r)
+{
+  var min := a[0][0];
+  for i := 0 to a.Length
+  // this invariant is for proving the first ensure statement
+  invariant forall k, l :: (0 <= k < i && 0 <= l < a[k].Length) ==> min <= a[k][l]
+  
+  // this invariant is for proving the second ensure statement
+  invariant exists k, l :: (0 <= k < a.Length && 0 <= l < a[k].Length) && (a[k][l] == min)
+  {
+    for j := 0 to a[i].Length
+    
+    // first write an invariants for the subarrays a[0] to a[i-1] inclusive
+    invariant forall k, l :: (0 <= k < i && 0 <= l < a[k].Length) ==> (a[k][l] >= min)
+
+    // then write an invariant specifically checking for the subarray a[i] upto j-1 index
+    invariant forall l :: (0 <= l < j) ==> (a[i][l] >= min)
+
+    // invariant to prove the second ensure statement
+    invariant exists k, l :: (0 <= k < a.Length && 0 <= l < a[k].Length) && (a[k][l] == min)
+    {
+      if a[i][j] < min {
+        min := a[i][j];
+      }
+    }
+  }
+  return min;
+}
+\end{lstlisting}
 
 \problem{Binary Search}
 The file binary\_search.dfy contains a method BinarySearch that performs binary search on a sorted array. The sorted-ness is guaranteed by the $Ordered(a)$ predicate, which is just a formula that asserts $a[i] <= a[j]$ for all $i <= j$. The post-condition is provided, which says that the method returns true if and only if the key $x$ is contained in the array. Also, note that the while-loop is annotated with decreases $hi - lo$, which enables Dafny to prove that the loop terminates because the quantifier $(hi - lo)$ monotonically decreases in each iteration of the loop.
@@ -99,6 +176,51 @@ Attach your code and a brief explanation of your invariant in your submission.
 
 \solution
 
+We need two invariants here:
+\begin{enumerate}
+    \renewcommand{\labelenumi}{\arabic{enumi}.}
+    \item x should be strictly greater than all the elements in the subarray $a[0:lo]$ and similarly 
+    \item x should be strictly less than all the elements in the subarray $a[hi:len-1]$
+\end{enumerate}
+
+\begin{lstlisting}
+method BinarySearch(a: array<int>, x: int)
+  returns (found: bool)
+  requires Ordered(a)
+  ensures
+    // <==> means if-and-only if
+    // so we're ensuring that
+    // - Our search is sound: if we report true, then x must be in a
+    // - Our search is complete: if x can be found, then we must report true
+    found <==>
+    exists i ::
+      0 <= i < a.Length &&
+      a[i] == x
+{
+  var len := a.Length;
+  var lo := 0;
+  var hi := len;
+  while lo < hi
+    decreases hi - lo
+    invariant 0 <= lo <= hi <= len
+    // ensure that x is strictly greater than all elements in array a[0:lo]
+    invariant forall i : int :: 0 <= i < lo ==> a[i] < x
+
+    //ensure that x is strictly less than all elements in array a[hi:len-1]
+    invariant forall i : int :: hi <= i < len ==> a[i] > x
+  {
+    var mid := (lo + hi) / 2;
+    if x == a[mid] {
+      return true;
+    } else if x < a[mid] {
+      hi := mid;
+    } else {
+      lo := mid + 1;
+    }
+  }
+  return false;
+}
+\end{lstlisting}
 \problem{Buggy Binary Search}
 Immediately below BinarySearch, we duplicated its implementation into another method called BuggyBinarySearch. The only change we made is to make the index variables (lo, mid, hi, etc.) into 4-bit integers (unsigned), whereas in Dafny int is the default infinite-precision integer.
 
@@ -120,7 +242,49 @@ Include your answers to the above questions in your submission. You should also 
 \begin{quote}
     The answers to the above questions can be found in the Wikipedia page for binary search, under the section Implementation Issues
 \end{quote}
+
 \solution
+\part
+\textbf{Reported Error:} Dafny cannot verify that the decreasing property is maintained in the line \( \text{while lo} < \text{hi}\).
+\part
+Underlying cause of the error is at the line calculating mid: \( \text{var mid := (lo + hi) / 2;} \). This is because sum of two bv4 variables can overflow the range of bv4 even though both variables are within the range of bv4.
+\part
+To circumvent this issue we can use the following formula: \( \text{var mid := (hi - lo) / 2 + lo} \).
+
+\begin{lstlisting}
+method BuggyBinarySearch(a: array<int>, x: int)
+  returns (found: bool)
+  requires Ordered(a)
+  requires a.Length < 16
+  ensures
+    found <==>
+    exists i : bv4 ::
+    0 <= i < a.Length as bv4 &&
+    a[i] == x
+{
+  var len := a.Length as bv4;
+  var lo := 0;
+  var hi := len;
+  while lo < hi
+    decreases hi - lo
+    invariant 0 <= lo <= hi <= len
+    // ensure that x is strictly greater than all elements in array a[0:lo]
+    invariant forall i : bv4 :: 0 <= i < lo ==> a[i] < x
+    //ensure that x is strictly less than all elements in array a[hi:len-1]
+    invariant forall i : bv4 :: hi <= i < len ==> a[i] > x
+  {
+    var mid := (hi - lo) / 2 + lo;
+    if x == a[mid] {
+      return true;
+    } else if x < a[mid] {
+      hi := mid;
+    } else {
+      lo := mid + 1;
+    }
+  }
+  return false;
+}
+\end{lstlisting}
 
 \problem{Bubble Sort}
 Implement bubble sort in Dafny, and prove its correctness. There are multiple levels you can aim for in terms of the complexity of your implementation and the strength of your correctness proof:

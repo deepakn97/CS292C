@@ -26,7 +26,11 @@ method BinarySearch(a: array<int>, x: int)
   while lo < hi
     decreases hi - lo
     invariant 0 <= lo <= hi <= len
-    invariant true // replace with your own invariant
+    // ensure that x is strictly greater than all elements in array a[0:lo]
+    invariant forall i : int :: 0 <= i < lo ==> a[i] < x
+
+    //ensure that x is strictly less than all elements in array a[hi:len-1]
+    invariant forall i : int :: hi <= i < len ==> a[i] > x
   {
     var mid := (lo + hi) / 2;
     if x == a[mid] {
@@ -58,9 +62,12 @@ method BuggyBinarySearch(a: array<int>, x: int)
   while lo < hi
     decreases hi - lo
     invariant 0 <= lo <= hi <= len
-    invariant true // replace with the same invariant you wrote previously
+    // ensure that x is strictly greater than all elements in array a[0:lo]
+    invariant forall i : bv4 :: 0 <= i < lo ==> a[i] < x
+    //ensure that x is strictly less than all elements in array a[hi:len-1]
+    invariant forall i : bv4 :: hi <= i < len ==> a[i] > x
   {
-    var mid := (lo + hi) / 2;
+    var mid := (hi - lo) / 2 + lo;
     if x == a[mid] {
       return true;
     } else if x < a[mid] {

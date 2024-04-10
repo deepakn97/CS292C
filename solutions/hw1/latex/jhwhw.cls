@@ -20,6 +20,7 @@
 \RequirePackage{amsmath}
 \RequirePackage{listings}
 \RequirePackage{booktabs}
+\RequirePackage{color}
 %\RequirePackage{jhwgraphics} Another personal style file I use.
 
 
