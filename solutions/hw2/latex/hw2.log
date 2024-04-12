@@ -1,10 +1,10 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.4.3)  10 APR 2024 00:19
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.4.3)  10 APR 2024 12:05
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
  %&-line parsing enabled.
-**/Users/deepaknathani/Projects/CS292C/solutions/hw1/latex/hw1
-(/Users/deepaknathani/Projects/CS292C/solutions/hw1/latex/hw1.tex
+**/Users/deepaknathani/Projects/CS292C/solutions/hw2/latex/hw2
+(/Users/deepaknathani/Projects/CS292C/solutions/hw2/latex/hw2.tex
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-02-20>
 (./jhwhw.cls
@@ -393,8 +393,8 @@ Package: varwidth 2009/03/30 ver 0.92;  Variable-width minipages
 File: l3backend-pdftex.def 2024-02-20 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count315
 \l__pdf_internal_box=\box60
-) (./hw1.aux)
-\openout1 = `hw1.aux'.
+) (./hw2.aux)
+\openout1 = `hw2.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 10.
 LaTeX Font Info:    ... okay on input line 10.
@@ -470,48 +470,48 @@ File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
 ))
 \c@lstlisting=\count322
 Package hyperref Info: Link coloring OFF on input line 10.
- (./hw1.out) (./hw1.out)
+ (./hw2.out) (./hw2.out)
 \@outlinefile=\write3
-\openout3 = `hw1.out'.
+\openout3 = `hw2.out'.
 
  [1
 
 {/usr/local/texlive/2024/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
+Underfull \hbox (badness 10000) in paragraph at lines 55--57
+
+ []
+
+<problem1.png, id=19, 1513.655pt x 390.45876pt>
+File: problem1.png Graphic file (type png)
+<use problem1.png>
+Package pdftex.def Info: problem1.png  used on input line 58.
+(pdftex.def)             Requested size: 469.75502pt x 121.178pt.
+
 pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.71 \item S
-            tate the correctness property of this method in terms of pre-con... [1] [2] [3] [4] [5]
-Overfull \hbox (13.14833pt too wide) in paragraph at lines 231--232
-[]\OT1/cmr/m/n/12 After that, you shall see that Dafny can-not ver-ify the cor-rect-ness of Bug-gyBV4BinarySearch.
- []
-
-[6] [7]
-Underfull \hbox (badness 10000) in paragraph at lines 299--302
-
- []
-
-[8] [9] [10] (./hw1.aux)
+l.78 \end{document}
+                    [1 <./problem1.png>] [2] (./hw2.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-02-20>
  ***********
-Package rerunfilecheck Info: File `hw1.out' has not changed.
+Package rerunfilecheck Info: File `hw2.out' has not changed.
 (rerunfilecheck)             Checksum: 786FFBF57A1197B8B0959E9B46CB9052;180.
  ) 
 Here is how much of TeX's memory you used:
- 13810 strings out of 474116
- 214538 string characters out of 5743683
- 2301187 words of memory out of 5000000
+ 13596 strings out of 474116
+ 211605 string characters out of 5743683
+ 1942187 words of memory out of 5000000
  35755 multiletter control sequences out of 15000+600000
  565839 words of font info for 64 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 99i,12n,107p,658b,1950s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
-Output written on hw1.pdf (11 pages, 122827 bytes).
+ 99i,11n,107p,374b,1127s stack positions out of 10000i,1000n,20000p,200000b,200000s
+</usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb>
+Output written on hw2.pdf (3 pages, 347098 bytes).
 PDF statistics:
- 379 PDF objects out of 1000 (max. 8388607)
- 348 compressed objects within 4 object streams
- 241 named destinations out of 1000 (max. 500000)
- 17 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 84 PDF objects out of 1000 (max. 8388607)
+ 66 compressed objects within 1 object stream
+ 27 named destinations out of 1000 (max. 500000)
+ 22 words of extra memory for PDF output out of 10000 (max. 10000000)
 
