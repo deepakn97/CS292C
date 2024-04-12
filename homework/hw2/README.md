@@ -200,7 +200,11 @@ We can extend this to include boolean expressions, and the full IMP language:
 (** Comparison ops  *)
 type comp = 
   | Eq (** equal *)
-  | Geq (** greater or equal *)
+  | Geq (** greater than or equal to *)
+  | Gt (* greater than *)
+  | Lt  (** less than *)
+  | Leq (** less than or equal to *)
+  | Neq (** not equal *)
 
 (** Boolean expressions (which can appear in conditions *)
 type bexp =
@@ -208,6 +212,9 @@ type bexp =
   | Bool of bool
   (* integer comparison *)
   | Comp of comp * aexp * aexp
+  | Not of bexp (* negation *)
+  | And of bexp * bexp (* conjunction *)
+  | Or of bexp * bexp (* disjunction *)
 
 (** Statements *)
 type stmt =
@@ -348,7 +355,7 @@ type aexp =
   | Store of aexp * aexp * aexp (** array write *)
 ```
 
-For example, the IMP expression `a[i][j]` will be represented as `Select (Select (a, i), j)`.
+For example, the IMP expression `a[i][j]` will be represented as `Select (Select (Var "a", Var "i"), Var "j")`.
 
 Array assignments need some care when they're translated from concrete syntax to abstract syntax. In imperative languages, we can write `a[i] := 1` to update the value at index `i` in array `a` to be one. 
 This kind of array update syntax needs to be translated to the more basic array operations of `select` and `store`, and the IMP assignment statement.
@@ -404,8 +411,8 @@ In addition to including the definitions of these functions, also include the fo
 
 For each abstract syntax tree you wrote down in Problem 9,
 
-- for every access path P that is being read from (in both the RHS and the LHS of an assignment), convert it to the corresponding `aexp` using `path_to_rhs_aexp`, and include the output in your PDF file.
-- for every access path P that is being updated with a new value, call `path_to_lhs_stmt` with the access path P and some dummy value (`Int 0`, for example), and include the output in your PDF file.
+- for every access path P that is being read from (in both the RHS and the LHS of an assignment), convert it to the corresponding `aexp` using `read_from_path`, and include the output in your PDF file.
+- for every access path P that is being updated with a new value, call `write_to_path` on the access path P with some dummy value (`Int 0`, for example), and include the output in your PDF file.
 
 
 ### Problem 11
