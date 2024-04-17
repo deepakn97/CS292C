@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.4.3)  10 APR 2024 12:05
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.4.3)  16 APR 2024 23:36
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
@@ -481,17 +481,241 @@ Underfull \hbox (badness 10000) in paragraph at lines 55--57
 
  []
 
-<problem1.png, id=19, 1513.655pt x 390.45876pt>
-File: problem1.png Graphic file (type png)
-<use problem1.png>
-Package pdftex.def Info: problem1.png  used on input line 58.
+<assets/problem1.png, id=19, 1513.655pt x 390.45876pt>
+File: assets/problem1.png Graphic file (type png)
+<use assets/problem1.png>
+Package pdftex.def Info: assets/problem1.png  used on input line 58.
 (pdftex.def)             Requested size: 469.75502pt x 121.178pt.
 
 pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.78 \end{document}
-                    [1 <./problem1.png>] [2] (./hw2.aux)
+l.63 \begin{lstlisting}
+                        [1 <./assets/problem1.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 78--79
+
+ []
+
+<assets/q2tc1.png, id=32, 1507.6325pt x 64.24pt>
+File: assets/q2tc1.png Graphic file (type png)
+<use assets/q2tc1.png>
+Package pdftex.def Info: assets/q2tc1.png  used on input line 82.
+(pdftex.def)             Requested size: 469.75502pt x 20.01613pt.
+
+Overfull \hbox (29.3747pt too wide) in paragraph at lines 82--83
+[] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 83--84
+
+ []
+
+<assets/q2tc2.png, id=33, 1506.62875pt x 70.2625pt>
+File: assets/q2tc2.png Graphic file (type png)
+<use assets/q2tc2.png>
+Package pdftex.def Info: assets/q2tc2.png  used on input line 87.
+(pdftex.def)             Requested size: 469.75502pt x 21.90657pt.
+
+Overfull \hbox (29.3747pt too wide) in paragraph at lines 87--88
+[] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 88--89
+
+ []
+
+<assets/q2tc3.png, id=34, 1504.62125pt x 68.255pt>
+File: assets/q2tc3.png Graphic file (type png)
+<use assets/q2tc3.png>
+Package pdftex.def Info: assets/q2tc3.png  used on input line 92.
+(pdftex.def)             Requested size: 469.75502pt x 21.30983pt.
+
+Overfull \hbox (29.3747pt too wide) in paragraph at lines 92--93
+[] 
+ []
+
+[2 <./assets/q2tc1.png> <./assets/q2tc2.png> <./assets/q2tc3.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 111--112
+
+ []
+
+<assets/q3tc1.png, id=67, 689.57625pt x 81.30376pt>
+File: assets/q3tc1.png Graphic file (type png)
+<use assets/q3tc1.png>
+Package pdftex.def Info: assets/q3tc1.png  used on input line 115.
+(pdftex.def)             Requested size: 469.75502pt x 55.38629pt.
+
+Overfull \hbox (29.3747pt too wide) in paragraph at lines 115--116
+[] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 116--117
+
+ []
+
+<assets/q3tc2.png, id=68, 792.9625pt x 74.2775pt>
+File: assets/q3tc2.png Graphic file (type png)
+<use assets/q3tc2.png>
+Package pdftex.def Info: assets/q3tc2.png  used on input line 120.
+(pdftex.def)             Requested size: 469.75502pt x 44.00354pt.
+
+Overfull \hbox (29.3747pt too wide) in paragraph at lines 120--121
+[] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 121--122
+
+ []
+
+<assets/q3tc3.png, id=69, 791.95876pt x 75.28125pt>
+File: assets/q3tc3.png Graphic file (type png)
+<use assets/q3tc3.png>
+Package pdftex.def Info: assets/q3tc3.png  used on input line 125.
+(pdftex.def)             Requested size: 469.75502pt x 44.65446pt.
+
+Overfull \hbox (29.3747pt too wide) in paragraph at lines 125--126
+[] 
+ []
+
+[3 <./assets/q3tc1.png> <./assets/q3tc2.png> <./assets/q3tc3.png>]
+<assets/q4a.png.png, id=99, 914.41624pt x 307.1475pt>
+File: assets/q4a.png.png Graphic file (type png)
+<use assets/q4a.png.png>
+Package pdftex.def Info: assets/q4a.png.png  used on input line 146.
+(pdftex.def)             Requested size: 469.75502pt x 157.7867pt.
+
+Overfull \hbox (17.62482pt too wide) in paragraph at lines 146--147
+[][] 
+ []
+
+<assets/q4b.png, id=100, 791.95876pt x 213.79875pt>
+File: assets/q4b.png Graphic file (type png)
+<use assets/q4b.png>
+Package pdftex.def Info: assets/q4b.png  used on input line 163.
+(pdftex.def)             Requested size: 469.75502pt x 126.81871pt.
+
+Overfull \hbox (17.62482pt too wide) in paragraph at lines 163--164
+[][] 
+ []
+
+[4 <./assets/q4a.png.png>]
+<assets/q4c.png, id=128, 917.4275pt x 214.8025pt>
+File: assets/q4c.png Graphic file (type png)
+<use assets/q4c.png>
+Package pdftex.def Info: assets/q4c.png  used on input line 181.
+(pdftex.def)             Requested size: 469.75502pt x 109.98701pt.
+
+Overfull \hbox (17.62482pt too wide) in paragraph at lines 181--182
+[][] 
+ []
+
+<assets/q4d.png, id=129, 902.37125pt x 512.91624pt>
+File: assets/q4d.png Graphic file (type png)
+<use assets/q4d.png>
+Package pdftex.def Info: assets/q4d.png  used on input line 199.
+(pdftex.def)             Requested size: 469.75502pt x 267.01538pt.
+
+Overfull \hbox (17.62482pt too wide) in paragraph at lines 199--200
+[][] 
+ []
+
+[5 <./assets/q4b.png> <./assets/q4c.png>]
+<assets/q4e.png, id=157, 835.12pt x 214.8025pt>
+File: assets/q4e.png Graphic file (type png)
+<use assets/q4e.png>
+Package pdftex.def Info: assets/q4e.png  used on input line 220.
+(pdftex.def)             Requested size: 469.75502pt x 120.82938pt.
+
+Overfull \hbox (17.62482pt too wide) in paragraph at lines 220--221
+[][] 
+ []
+
+[6 <./assets/q4d.png> <./assets/q4e.png>]
+<assets/q5a.png, id=178, 571.13374pt x 70.2625pt>
+File: assets/q5a.png Graphic file (type png)
+<use assets/q5a.png>
+Package pdftex.def Info: assets/q5a.png  used on input line 233.
+(pdftex.def)             Requested size: 469.75502pt x 57.79036pt.
+
+Overfull \hbox (17.62482pt too wide) in paragraph at lines 233--234
+[][] 
+ []
+
+<assets/q5b.png, id=179, 796.9775pt x 349.305pt>
+File: assets/q5b.png Graphic file (type png)
+<use assets/q5b.png>
+Package pdftex.def Info: assets/q5b.png  used on input line 245.
+(pdftex.def)             Requested size: 469.75502pt x 205.88562pt.
+
+Overfull \hbox (17.62482pt too wide) in paragraph at lines 245--246
+[][] 
+ []
+
+[7 <./assets/q5a.png> <./assets/q5b.png>]
+<assets/q5c.png, id=198, 883.3pt x 279.0425pt>
+File: assets/q5c.png Graphic file (type png)
+<use assets/q5c.png>
+Package pdftex.def Info: assets/q5c.png  used on input line 258.
+(pdftex.def)             Requested size: 469.75502pt x 148.3985pt.
+
+Overfull \hbox (17.62482pt too wide) in paragraph at lines 258--259
+[][] 
+ []
+
+<assets/q5d.png, id=199, 743.77875pt x 140.525pt>
+File: assets/q5d.png Graphic file (type png)
+<use assets/q5d.png>
+Package pdftex.def Info: assets/q5d.png  used on input line 269.
+(pdftex.def)             Requested size: 469.75502pt x 88.75421pt.
+
+Overfull \hbox (17.62482pt too wide) in paragraph at lines 269--270
+[][] 
+ []
+
+<assets/q5e.png, id=200, 874.26625pt x 208.78pt>
+File: assets/q5e.png Graphic file (type png)
+<use assets/q5e.png>
+Package pdftex.def Info: assets/q5e.png  used on input line 286.
+(pdftex.def)             Requested size: 469.75502pt x 112.182pt.
+
+Overfull \hbox (17.62482pt too wide) in paragraph at lines 286--287
+[][] 
+ []
+
+[8 <./assets/q5c.png> <./assets/q5d.png>] [9 <./assets/q5e.png>] [10]
+<assets/q7.png, id=296, 706.64pt x 208.78pt>
+File: assets/q7.png Graphic file (type png)
+<use assets/q7.png>
+Package pdftex.def Info: assets/q7.png  used on input line 372.
+(pdftex.def)             Requested size: 469.75502pt x 138.79233pt.
+ [11 <./assets/q7.png>]
+<assets/q8a.png, id=326, 980.66376pt x 211.79124pt>
+File: assets/q8a.png Graphic file (type png)
+<use assets/q8a.png>
+Package pdftex.def Info: assets/q8a.png  used on input line 412.
+(pdftex.def)             Requested size: 469.75502pt x 101.45181pt.
+ [12 <./assets/q8a.png>]
+<assets/q8b.png, id=363, 1020.81375pt x 211.79124pt>
+File: assets/q8b.png Graphic file (type png)
+<use assets/q8b.png>
+Package pdftex.def Info: assets/q8b.png  used on input line 438.
+(pdftex.def)             Requested size: 469.75502pt x 97.46393pt.
+<assets/q8c.png, id=364, 1123.19624pt x 208.78pt>
+File: assets/q8c.png Graphic file (type png)
+<use assets/q8c.png>
+Package pdftex.def Info: assets/q8c.png  used on input line 458.
+(pdftex.def)             Requested size: 469.75502pt x 87.31744pt.
+ [13 <./assets/q8b.png> <./assets/q8c.png>] [14] [15] [16] [17]
+<assets/q10a.png, id=571, 1243.64626pt x 395.4775pt>
+File: assets/q10a.png Graphic file (type png)
+<use assets/q10a.png>
+Package pdftex.def Info: assets/q10a.png  used on input line 653.
+(pdftex.def)             Requested size: 469.75502pt x 149.37784pt.
+ [18 <./assets/q10a.png>] (./hw2.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-02-20>
@@ -500,18 +724,18 @@ Package rerunfilecheck Info: File `hw2.out' has not changed.
 (rerunfilecheck)             Checksum: 786FFBF57A1197B8B0959E9B46CB9052;180.
  ) 
 Here is how much of TeX's memory you used:
- 13596 strings out of 474116
- 211605 string characters out of 5743683
- 1942187 words of memory out of 5000000
- 35755 multiletter control sequences out of 15000+600000
+ 14196 strings out of 474116
+ 221431 string characters out of 5743683
+ 2149187 words of memory out of 5000000
+ 35908 multiletter control sequences out of 15000+600000
  565839 words of font info for 64 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 99i,11n,107p,374b,1127s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb>
-Output written on hw2.pdf (3 pages, 347098 bytes).
+ 99i,12n,107p,374b,1952s stack positions out of 10000i,1000n,20000p,200000b,200000s
+</usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb>
+Output written on hw2.pdf (19 pages, 1805947 bytes).
 PDF statistics:
- 84 PDF objects out of 1000 (max. 8388607)
- 66 compressed objects within 1 object stream
- 27 named destinations out of 1000 (max. 500000)
- 22 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 737 PDF objects out of 1000 (max. 8388607)
+ 649 compressed objects within 7 object streams
+ 474 named destinations out of 1000 (max. 500000)
+ 127 words of extra memory for PDF output out of 10000 (max. 10000000)
 

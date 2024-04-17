@@ -1,2 +1,6 @@
 *.dll
 *.runtimeconfig.json
+.vscode
+*_build
+*.cmi
+*.cmo

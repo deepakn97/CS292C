@@ -1,1 +1,0 @@
-let compress : ('a -> 'a -> bool) -> 'a list -> 'a list
