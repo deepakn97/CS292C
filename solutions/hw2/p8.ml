@@ -1,14 +1,21 @@
 open P7
 type heap = Heap of (string * int) list
 
-let rec lookup (k: 'k) (d: heap) : int option =
+(* let rec lookup (k: 'k) (d: heap) : int option =
   match d with
   | Heap [] -> None
   | Heap ((l, j)::t) ->
     if String.equal l k then
       Some j
     else
-      lookup k (Heap t)
+      lookup k (Heap t) *)
+
+let lookup (k: string) (d: heap) : int option=
+match d with
+| Heap t ->
+  try
+    let (_, value) = List.find (fun (i, _) -> String.equal i k) t in Some value
+  with Not_found -> None
 
 let insert (k: string) (v: int) (h: heap) : heap = 
   match h with
