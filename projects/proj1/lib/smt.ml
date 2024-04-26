@@ -95,10 +95,8 @@ let check_validity (gamma : Lang.gamma) (f : Lang.formula) : status =
   (* create solver instance *)
   let solver = Solver.mk_solver ctx None in
   (* TODO: translate the verification condition into a Z3 constraint *)
-  let c =
-    Todo.at_level 1 ~msg:"Smt.check_validity: c"
-      ~dummy:(formula [] (FBool true))
-  in
+  let env_list = List.map gamma ~f:(convert) in
+  let c = formula env_list f in
   Logs.debug (fun m ->
       m "Checking satisfiability of formula:\n%!%s"
         (SMT.benchmark_to_smtstring ctx
@@ -118,4 +116,7 @@ let check_validity (gamma : Lang.gamma) (f : Lang.formula) : status =
     |> Option.value_exn ~error:(Error.of_string "Solver returned no model")
     |> Model.to_string
   in
-  Todo.at_level 1 ~msg:"Smt.check_validity: validity status" ~dummy:Unknown
+  match result with
+  | UNSATISFIABLE -> Valid
+  | UNKNOWN -> Unknown
+  | SATISFIABLE -> Invalid (model_str ())
