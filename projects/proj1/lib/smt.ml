@@ -47,8 +47,8 @@ let rec aexp (env : env) (e : Lang.aexp) : expr =
         | Mod -> Integer.mk_mod ctx e1 e2
       in
       mk (aexp env e1) (aexp env e2)
-  | Select { arr; idx } -> Todo.at_level 2 ~msg:"Smt.aexp: Select"
-  | Store { arr; idx; value } -> Todo.at_level 2 ~msg:"Smt.aexp: Store"
+  | Select { arr; idx } -> Z3Array.mk_select ctx (aexp env arr) (aexp env idx)
+  | Store { arr; idx; value } -> Z3Array.mk_store ctx (aexp env arr) (aexp env idx) (aexp env value)
 
 (** Convert a [formula] to a Z3 expression *)
 let rec formula (env : env) (f : Lang.formula) : expr =
@@ -87,7 +87,7 @@ let rec formula (env : env) (f : Lang.formula) : expr =
 (** Convert a (variable, type) pair to a (variable, Z3 expr) pair where the Z3 expression 
   is a constant symbol of the appropriate sort *)
 let convert ((x, t) : string * Lang.ty) : string * expr =
-  let x_const = mk_const_s ctx x (sort_of_ty t) in
+  let x_const = Expr.mk_const_s ctx x (sort_of_ty t) in
   (x, x_const)
 
 (** Determine the validity status of a verification condition formula *)
@@ -96,7 +96,7 @@ let check_validity (gamma : Lang.gamma) (f : Lang.formula) : status =
   let solver = Solver.mk_solver ctx None in
   (* TODO: translate the verification condition into a Z3 constraint *)
   let env_list = List.map gamma ~f:(convert) in
-  let c = formula env_list f in
+  let c = formula env_list (FNot f) in
   Logs.debug (fun m ->
       m "Checking satisfiability of formula:\n%!%s"
         (SMT.benchmark_to_smtstring ctx

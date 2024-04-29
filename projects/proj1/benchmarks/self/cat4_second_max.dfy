@@ -6,6 +6,7 @@ method max(a: int, b: int) returns (r: int)
   ensures r >= a && r >= b
 {
   var res: int;
+  res := *;
   if a > b {
     res := a;
   } else {
@@ -17,26 +18,19 @@ method max(a: int, b: int) returns (r: int)
 method secondHighest(arr: array<int>, length: int) returns (dummy: int)
   requires length >= 2
 {
-  //   var arr : array<int>;
-  //   arr := *;
-  //   assume arr != null;
-  //   var length : int;
-  //   length := *;
-  //   assume length >= 2;
-
   var curr_max: int;
-  curr_max := arr[0];
   var second_max: int;
+  var i : int;
+  curr_max := arr[0];
   second_max := arr[0];
 
-  var i : int;
   i := 1;
   while i < length
     invariant 0 <= i <= length
     invariant second_max <= curr_max
-    invariant exists j: int :: 0 <= j < i && curr_max == arr[j]
-    invariant exists j: int :: 0 <= j < i && second_max == arr[j]
-    invariant exists j: int :: 0 <= j < i && second_max <= arr[j]
+    invariant exists j :: 0 <= j < i && curr_max == arr[j]
+    invariant exists j :: 0 <= j < i && second_max == arr[j]
+    invariant exists j :: 0 <= j < i && second_max <= arr[j]
   {
     if arr[i] >= curr_max {
       second_max := curr_max;

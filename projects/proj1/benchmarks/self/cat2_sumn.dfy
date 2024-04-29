@@ -8,9 +8,9 @@ method sumOfN() returns (dummy: int) {
   var i: int;
   var res: int;
   n := *;
-  assume n > 0;
   i := 1;
   res := 1;
+  assume n > 0;
 
   while i <= n
     invariant i <= n + 1

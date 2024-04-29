@@ -66,6 +66,10 @@ struct
   (** Update gamma to map a new variable with its type *)
   let add_gamma (x : string) (t : ty) : unit = gamma_ref := (x, t) :: !gamma_ref
 
+  let find_meth (callee_name: string) : meth =
+    List.find S.prog ~f:(fun m -> String.equal m.id callee_name)
+    |> Option.value_exn ~message:(Fmt.str "Method %s not found in program." callee_name)
+
   (** [INTERNAL] Counter to generate fresh variables *)
   let counter = ref 0
 
@@ -84,7 +88,13 @@ struct
     | If { cond; thn; els } -> (modified_block thn) @ (modified_block els)
     | While { cond; inv; body } -> (modified_block body)
     (* Here lhs is being modified along with all the variables in the body *)
-    | Call { lhs; callee; args } -> Todo.at_level 3 ~msg:"Verify.modified: Call"
+    (* args will be added to the modified list if the callee method is same as method to verify. Because that is a case of recursion. Todo.at_level 5 *)
+    | Call { lhs; callee; args } -> 
+      (
+        let callee_meth = find_meth callee in
+        let modified_vars = modified_block callee_meth.body in
+        [lhs] @ modified_vars
+      )
     | Havoc x -> [x]
     | Assume _ -> []
     | Assert _ -> []
@@ -98,15 +108,14 @@ struct
     (* deduplicate and sort the list *)
     List.dedup_and_sort ~compare:String.compare xs
 
-  
-
   (** Compile a statement into a sequence of guarded commands *)
   let rec compile (c : stmt) : gcom list =
     match c with
     (* NOTE: How do we determine if lhs is integer or array? This is needed for fresh_var. *)
     | Assign { lhs; rhs } -> 
       (
-        let tmp = fresh_var TInt ~hint:lhs in
+        let lhs_type = Utils.ty_exn (gamma ()) ~of_:lhs in
+        let tmp = fresh_var lhs_type ~hint:lhs in
         [Assume (FComp (Eq, Var tmp, Var lhs)); 
         Havoc lhs; 
         Assume (FComp (Eq, Var lhs, (Subst.aexp lhs (Var tmp) rhs)))]
@@ -132,7 +141,13 @@ struct
         let choose2 = Seq [Assume (FNot (bexp_to_formula cond))] in
         inv_assert_list @ havoc_variables @ inv_assume_list @ [Choose (choose1, choose2)]
       )
-    | Call { lhs; callee; args } -> Todo.at_level 3 ~msg:"Verify.compile: Call"
+    | Call { lhs; callee; args } -> 
+      (
+        let callee_meth = find_meth callee in
+        let modified_vars = modified_block callee_meth.body in
+        let args_list = List.map ~f:(fun s -> fresh_var (Utils.ty_exn (gamma ()) ~of_:s) ~hint:s) args in
+        [Assume (FComp (Eq, Var lhs, (Subst.aexp lhs (Var (fresh_var (Utils.ty_exn (gamma ()) ~of_:lhs ~hint:lhs)) args)))]
+      )
     | Havoc x -> [ Havoc x ]
     | Assume f -> [ Assume f ]
     | Assert f -> [ Assert f ]
@@ -147,7 +162,7 @@ struct
     match g with
     | Assume f' -> FConn (Imply, f', f)
     | Assert f' -> FConn (And, f', f)
-    | Havoc x -> Subst.formula x (Var (fresh_var TInt ~hint:x)) f
+    | Havoc x -> Subst.formula x (Var (fresh_var (Utils.ty_exn (gamma ()) ~of_:x) ~hint:x)) f
     | Seq cs -> 
       (
         match cs with
@@ -170,7 +185,7 @@ struct
     (* compile method to guarded commands *)
     (* here we have to convert the method into a list of statements *)
     let gs =
-      compile_block (Todo.at_level 2 ~msg:"compile_block" ~dummy:S.meth.body)
+      compile_block (S.meth.body)
     in
     Logs.debug (fun m -> m "Guarded commands:");
     Logs.debug (fun m -> m "%a" Fmt.(vbox (list Pretty.gcom)) gs);
