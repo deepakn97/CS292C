@@ -43,8 +43,8 @@ Post any questions you have in the `#proj2` Slack channel.
 ## Input
 
 > Library: `Frontend`
-> >
-> Modules: `Var`, `Lit`, `Clause`, `Formula`
+> 
+> Modules: `Var`, `Lit`, `Clause`, `Formula`, `Eval`
 > 
 > You should **not** need to understand the implementation details of any modules listed above. 
 
@@ -64,7 +64,7 @@ type t
 ```
 This means that clients of the `Var` module has no access to how variables are implemented. Instead, they should use the public functions exposed by the module to manipulate variables. This is a common pattern in OCaml to enforce encapsulation and prevent clients from relying on the internal representation of a data structure.
 
-The type representation of clauses and formulas, in contrast, are not abstract: clauses are sets of literals, and formulas are lists of clauses. You can directly manipulate these data structures using the functions from the [`Set`](https://ocaml.org/p/core/v0.16.1/doc/Core/Set/index.html) and the [`List`](https://ocaml.org/p/core/v0.16.1/doc/Core/List/index.html) modules of the `Base` library.
+The type representation of clauses and formulas, in contrast, are not abstract: clauses are sets of literals, and formulas are lists of clauses. You can directly manipulate these data structures using the functions from the [`Set`](https://ocaml.org/p/base/v0.16.3/doc/Base/Set/index.html) and the [`List`](https://ocaml.org/p/base/v0.16.3/doc/Base/List/index.html) modules of the `Base` library.
 
 
 ## Reference Interpreter
@@ -105,9 +105,9 @@ If the CNF formula is satisfiable, your SAT solver should return a satisfying as
 The file [lib/solver/dpll.ml](./lib/solver/dpll.ml) contains a complete implementation of the DPLL algorithm, minus the implementation of boolean constraint propagation (BCP), to be implemented in [lib/solver/bcp.ml](./lib/solver/bcp.ml). You should read the documentation for the `Bcp` module in the HTML documentation or in [lib/solver/bcp.mli](./lib/solver/bcp.mli) to understand what you need to implement.
 
 Your tasks are:
-1. Implement the function `val status : Eval.t -> Clause.t -> status` to determine the status of a **clause**: either satisfied (all literals evaluate to true), unsatisfied (all literals evaluate to false), unit (all but one literal evaluate to false, and the remaining literal evaluates to `None`), or unknown (none of the above). 
+1. Implement the function `val status : Eval.t -> Clause.t -> status` to determine the status of a **clause**: either satisfied (at least one literal evaluates to true), unsatisfied (all literals evaluate to false), unit (all but one literal evaluate to false, with the remaining literal being unassigned), or unknown (none of the above). 
    
-   *Hint:* You may find the following functions helpful: [`List.partition3_map`](https://ocaml.org/p/core/v0.16.1/doc/Core/List/index.html#val-partition3_map), [`Set.to_list`](https://ocaml.org/p/base/v0.16.3/doc/Base/Set/index.html#val-to_list), and `Eval.lit`.
+   *Hint:* You may find the following functions helpful: [`List.partition3_map`](https://ocaml.org/p/base/v0.16.3/doc/Base/List/index.html#val-partition3_map), [`Set.to_list`](https://ocaml.org/p/base/v0.16.3/doc/Base/Set/index.html#val-to_list), and `Eval.lit`.
 
 2. Implement the function `val run : int -> Assign.t -> Clause.t list -> result * Assign.t`. This function takes as input:
    - `level`: the current decision level
@@ -119,12 +119,11 @@ Your tasks are:
    2. Decision level, which maps literals to the decision level at which they were assigned
    3. Trails, which maps each decision level to a decision literal, and the reverse-chronological list of implied literals.
    4. Implication graph, which maps each implied literal to the unit clause that implied it.
-   You should not need to understand the implementation details of this data structure, but you should understand how to use it by reading the documentation.
-
-   You won't need to *maintain* those four sub-data structures yourself; they will be updated automatically by the `Assign` module when you call the appropriate assignment functions (`Assign.assign_decision` or `Assign.assign_implied`). However, you may find it helpful to access some of those data structures through the provided interface functions, e.g., `Assign.trail`, `Assign.level`, etc., when you work on CDCL.
+   
+   You should not need to understand the implementation details of this data structure, and you won't need to *maintain* it: they will be updated automatically when you call the appropriate assignment functions (`Assign.assign_decision` or `Assign.assign_implied`). However, you may find it helpful to access some of those data structures through the provided interface functions, e.g., `Assign.trail`, `Assign.level`, etc., when you ;later work on CDCL.
 
    Your `run` function should return
-   - a `result`, which can be `Unsat c` if an unsatisfiable clause `c` is found, `Sat` if every clause evaluates to true, or `Unknown` if the function cannot determine the satisfiability of the formula.
+   - a `result`, which can be `Unsat c` if an unsatisfiable clause `c` is identified, `Sat` if every clause evaluates to true, or `Unknown` if the function cannot determine the satisfiability of the formula.
    - an updated assignment.
 
    During BCP, if unit propagation of clause `c` implies that a literal `l` must be true, you should call `Assign.assign_implied a level c l` with the current assignment `a` and current `level`. This function will update all components of the assignment data structure accordingly, and return the updated data structure. 
@@ -329,7 +328,7 @@ The test suite is worth 10 points. You must pass all benchmarks to receive credi
 
 The DPLL solver can similarly return a unsatisfiability proof. However, the proof is much simpler than the CDCL proof, because DPLL doesn't learn conflict clauses. Instead, the proof is simply a tree of resolutions that eventually resolves into the empty clause; the proof script won't contain any lemmas.
 
-Adapt your DPLL solver to construct such a proof when it returns UNSAT. In particular, when BCP returns UNSAT, the `make_proof` function is responsible for constructing a resolution proof of type `Proof.t`. Implement this function, so that DPLL backtracks to the initial level, the `Backtrack` exception contains a resolution proof of the empty clause. (The proof script will be constructed in the `result` function, and will contain no lemmas since DPLL doesn't learn anything.)
+Adapt your DPLL solver to construct such a proof when it returns UNSAT. In particular, when BCP returns UNSAT, the `make_proof` function is responsible for constructing a resolution proof of type `Proof.t`. Implement this function, so that when DPLL backtracks to the initial level, the `Backtrack` exception will contain a resolution proof of the empty clause. (The proof script will be constructed in the `result` function, and will contain no lemmas since DPLL doesn't learn anything.)
 
 *Hints:*
 1. Mimic the proof construction process used in CDCL, but instead employ "last UIP learning" scheme: keep resolving until the "conflict" (i.e., what the current proof resolves into) only contains *decisions literals*, and no implied literals. This will be a resolution proof of the current (partial) *decision assignment*.
