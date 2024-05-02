@@ -30,44 +30,10 @@ module Subst = struct
     | FNot b -> FNot (formula x e b)
     | FConn (op, a, b) -> FConn (op, formula x e a, formula x e b)
     | FQ (q, a, b) -> 
-      (* only substitute if x is equal to a *)
-      if String.equal x a then FQ(q, a, b) else FQ(q, a, (formula x e b))
-end
-
-module Subst_multiple = struct
-  open Lang
-  (** [aexp (x, e) c] substitutes all occurrences of [x] in [c] with [e] *)
-  let rec aexp (mapping: (string * aexp) list) (c : aexp) : aexp =
-    match c with 
-    | Int n -> Int n
-    | Aop (op, a, b) -> Aop (op, aexp mapping a, aexp mapping b)
-    | Var v -> (match List.find_map mapping ~f:(fun (x, e) -> if String.equal x v then Some e else None) with
-                | Some e -> e
-                | None -> Var v)
-    | Select r -> Select {arr = (aexp mapping r.arr); idx = (aexp mapping r.idx)}
-    | Store r -> Store {arr = (aexp mapping r.arr); idx = (aexp mapping r.idx); value = (aexp mapping r.value)}
-
-  (** [bexp (x, e) c] substitutes all occurrences of [x] in [c] with [e] *)
-  let rec bexp (mapping: (string * aexp) list) (c : bexp) : bexp =
-    match c with
-    | Bool b -> Bool b
-    | Comp (op, a, b) -> Comp (op, aexp mapping a, aexp mapping b)
-    | Not b -> Not (bexp mapping b)
-    | And (b1, b2) -> And (bexp mapping b1, bexp mapping b2)
-    | Or (b1, b2) -> Or (bexp mapping b1, bexp mapping b2)
-
-  (** [formula (x, e) f] substitutes all occurrences of [x] in [f] with [e] *)
-  let rec formula (mapping: (string * aexp) list) (f : formula) : formula =
-    match f with
-    | FBool b -> FBool b
-    | FComp (op, a, b) -> FComp (op, aexp mapping a, aexp mapping b)
-    | FNot b -> FNot (formula mapping b)
-    | FConn (op, a, b) -> FConn (op, formula mapping a, formula mapping b)
-    | FQ (q, a, b) ->
       (
-        (* remove all the values which are equal to the variables present in quantifier *)
-        let updated_mapping = List.filter mapping ~f:(fun (x, _) -> not (String.equal x a)) in
-        FQ(q, a, formula updated_mapping b)
+        match e with
+        | Var c -> if String.equal x a then FQ (q, c, formula x e b) else FQ (q, a, formula x e b)
+        | _ -> FQ (q, a, formula x e b)
       )
 end
 
@@ -87,14 +53,6 @@ let rec find_vars_aexp (a: Lang.aexp) : string list =
   | Aop (_, a, b) -> find_vars_aexp a @ find_vars_aexp b
   | Select r -> find_vars_aexp r.arr @ find_vars_aexp r.idx
   | Store r -> find_vars_aexp r.arr @ find_vars_aexp r.idx @ find_vars_aexp r.value
-
-let rec find_vars_formula (f: Lang.formula) : string list =
-  match f with
-  | FBool _ -> []
-  | FComp (_, a, b) -> find_vars_aexp a @ find_vars_aexp b
-  | FNot f -> find_vars_formula f
-  | FConn (_, a, b) -> find_vars_formula a @ find_vars_formula b
-  | FQ (_, a, b) -> [a] @ (find_vars_formula b)
 
 (** Make a verifier for a method in a difny program *)
 module Make (S : sig
@@ -137,7 +95,15 @@ struct
     | Assign { lhs; rhs } -> [lhs]
     | If { cond; thn; els } -> (modified_block thn) @ (modified_block els)
     | While { cond; inv; body } -> (modified_block body)
-    (* Todo: revisit this *)
+    (* Here lhs is being modified along with all the variables in the body *)
+    (* args will be added to the modified list if the callee method is same as method to verify. Because that is a case of recursion. Todo.at_level 5 *)
+    (* | Call { lhs; callee; args } -> 
+      (
+        let callee_meth = find_meth callee in
+        (* since this is the caller implementation of this, we don't need to add the internal args to the modified variables *)
+        let modified_vars = modified_block callee_meth.body in
+        [lhs] @ modified_vars
+      ) *)
     | Call { lhs; callee; args } -> [lhs]
     | Havoc x -> [x]
     | Assume _ -> []
@@ -192,59 +158,47 @@ struct
     | Call { lhs; callee; args } -> 
       (
         let callee_meth = find_meth callee in
-        (* Implementation 3 *)
-        (* havoc all params *)
-        (* get all used variables in the preconditions *)
-        (* let used_vars_precondition = List.dedup_and_sort ~compare:String.compare (List.concat_map ~f:find_vars_formula callee_meth.requires) in
-        let used_vars_postcondition = List.dedup_and_sort ~compare:String.compare (List.concat_map ~f:find_vars_formula callee_meth.ensures) in
-        let fresh_used_vars_mapping_precondition = List.map ~f:(fun x -> (x, Var (fresh_var (Utils.ty_exn (gamma ()) ~of_:x) ~hint:x))) used_vars_precondition in
-        let fresh_used_vars_mapping_postcondition = List.map ~f:(fun x -> (x, Var (fresh_var (Utils.ty_exn (gamma ()) ~of_:x) ~hint:x))) used_vars_postcondition in
-        let fresh_used_vars_mapping_total = fresh_used_vars_mapping_precondition @ fresh_used_vars_mapping_postcondition in
-        (* assume y0 = y *)
-        let assume_used_vars_precondition = List.map ~f:(fun (x, fresh_arg) -> Assume (FComp (Eq, fresh_arg, Var x))) fresh_used_vars_mapping_precondition in
-        let assume_used_vars_postcondition = List.map ~f:(fun (x, fresh_arg) -> Assume (FComp (Eq, fresh_arg, Var x))) fresh_used_vars_mapping_postcondition in
-        (* now substite the tmp values of these vars in all the preconditions and postconditions *)
-
-        let subst_fresh_vars_precondition = List.map ~f:(fun f -> Subst_multiple.formula fresh_used_vars_mapping f) callee_meth.requires in
-        let subst_fresh_vars_postcondition = List.map ~f:(fun f -> Subst_multiple.formula fresh_used_vars_mapping f) callee_meth.ensures in
-        (* now the precondition is r == y0 + 1 *)
-        (* now substitute the return value in postconditions with lhs *)
-        let subst_return_postcondition = List.map ~f:(fun f -> Subst.formula (fst callee_meth.returns) (Var lhs) f) subst_fresh_vars_postcondition in
-        (* now the postcondition is y == y0 + 1. remember to call havoc before this, so that it can be converted to y1 = y0 + 1 *)
-        let assert_preconditions = List.map ~f:(fun f -> Assert f) subst_fresh_vars_precondition in
-        let assume_postconditions = List.map ~f:(fun f -> Assume f) subst_return_postcondition in
-        assume_used_vars @ assert_preconditions @ [Havoc lhs] @ assume_postconditions *)
-
-        (* Old Implementation starts *)
-        
-        let params_args_mapping = List.map2_exn ~f:(fun (x, _) arg -> (x, arg)) callee_meth.params args in
         (* subst pre-conditions with args *)
-        let subst_args_preconditions = List.map ~f:(fun f -> Subst_multiple.formula params_args_mapping f) callee_meth.requires in
-        (* now the precondition is r == y + 1 *)
-        (* assert pre-conditions *)
-        let assert_preconditions = List.map ~f:(fun f -> Assert f) subst_args_preconditions in
-        (* add the callee_meth.returns param to gamma so that we can havoc that variable *)
-        let return_param = fresh_var (snd callee_meth.returns) ~hint:(fst callee_meth.returns) in
-        (* subst post-conditions with appropriate args and new return variable *)
-        let subst_args_postconditions = List.map ~f:(fun f -> Subst_multiple.formula (params_args_mapping @ [((fst callee_meth.returns), Var return_param)]) f) callee_meth.ensures in
-        (* let assume_return_param =  *)
-        (* assert post-conditions *)
-        (* let used_vars = List.dedup_and_sort ~compare:String.compare (List.concat_map ~f:find_vars_formula subst_args_postconditions) in
-        let havoc_params = List.map ~f:(fun x -> Havoc x) used_vars in *)
-        let assume_postconditions = List.map ~f:(fun f -> Assume f) subst_args_postconditions in
-        (* final sequence of commands *)
-        (* assert_preconditions @ (compile (Assign { lhs = lhs; rhs = Var return_param })) @ assume_postconditions *)
-
-        assert_preconditions @ assume_postconditions @  (compile (Assign { lhs = lhs; rhs = Var return_param }))
-        (* return_param = r0 *)
-        (* Assume min0 = min
-        havoc min
-        Assume min = r0
-        assume r0 >= (0-y) && r0 <= (0-x)
-        assume r0 >= (0-y) || r0 <= (0-x)
-        assert 0-min <= x && 0-min <= y
-        as *)
-        (* Old Implementation ends *)
+        (* we need to replace all the func params with their temp variables in the args aexp before passing to the function *)
+        (* here we are substituing the instances of input params for current method in all the args with fresh params *)
+        (* we need to find all the current method variables which are being used in args and substitute only them with fresh params*)
+        let used_vars = List.dedup_and_sort ~compare:String.compare (List.concat_map ~f:find_vars_aexp args) in
+        let fresh_params_mapping = List.map ~f:(fun x -> (x, fresh_var (Utils.ty_exn (gamma ()) ~of_:x) ~hint:x)) used_vars in
+        let rec subst_fresh_params_arg (arg: aexp) (mapping: (string * string) list): aexp = 
+          match mapping with
+          | [] -> arg
+          | (param, fresh_param)::xs -> Subst.aexp param (Var fresh_param) (subst_fresh_params_arg arg xs)
+        in
+        (* now we want to create a mapping between callee params and fresh args (caller params replaced with fresh variables) *)
+        let subst_args = List.map ~f:(fun arg -> subst_fresh_params_arg arg fresh_params_mapping) args in
+        (* before we can use the fresh params, we have to assume the values *)
+        (* let assume_fresh_params = List.map2_exn ~f:(fun (x, t) fresh_arg -> Assume (FComp (Eq, Var fresh_arg, Var x))) S.meth.params fresh_params in *)
+        let assume_fresh_params = List.map ~f:(fun (x, fresh_arg) -> Assume (FComp (Eq, Var fresh_arg, Var x))) fresh_params_mapping in
+        let havoc_params = List.map ~f:(fun (x, _) -> Havoc x) fresh_params_mapping in
+        (* this function substitutes occurances of all params with their values in a given formula *)
+        let rec subst_param_arg (cond: formula) (mapping: (string * aexp) list): formula = 
+          match mapping with
+          | [] -> cond
+          | (param, arg)::xs -> Subst.formula param arg (subst_param_arg cond xs)
+        in
+        let callee_params_args_mapping = List.map2_exn ~f:(fun (x, t) arg -> (x, arg)) callee_meth.params subst_args in
+        let subst_preconditions = List.map ~f:(fun f -> Assert (subst_param_arg f callee_params_args_mapping)) callee_meth.requires in
+        (* subst post-conditions with lhs *)
+        let (return_param, _) = callee_meth.returns in
+        (* substitute all the params with their new aexp values in the postconditions *)
+        let subst_args_postconditions = List.map ~f:(fun f -> subst_param_arg f callee_params_args_mapping) callee_meth.ensures in
+        (* now substitute the return param of the callee with lhs, because we want to assert the postcondition on that *)
+        let subst_postconditions = List.map ~f:(fun f -> Assume (Subst.formula return_param (Var lhs) f)) subst_args_postconditions in
+        
+        Logs.debug (fun m -> m "Assuming fresh params:");
+        Logs.debug (fun m -> m "%a" Fmt.(vbox (list Pretty.gcom)) assume_fresh_params);
+        Logs.debug (fun m -> m "Havoc params:");
+        Logs.debug (fun m -> m "%a" Fmt.(vbox (list Pretty.gcom)) havoc_params);
+        Logs.debug (fun m -> m "Subst preconditions:");
+        Logs.debug (fun m -> m "%a" Fmt.(vbox (list Pretty.gcom)) subst_preconditions);
+        Logs.debug (fun m -> m "Subst postconditions:");
+        Logs.debug (fun m -> m "%a" Fmt.(vbox (list Pretty.gcom)) subst_postconditions);
+        assume_fresh_params @ havoc_params @ subst_preconditions @ subst_postconditions
       )
     | Havoc x -> [ Havoc x ]
     | Assume f -> [ Assume f ]
@@ -279,18 +233,41 @@ struct
     (* print method id and content *)
     Logs.debug (fun m -> m "Verifying method %s:" S.meth.id);
     Logs.debug (fun m -> m "%a" Pretty.meth S.meth);
-    (* logic for loops is that we first assert the pre-conditions to prove that the conditions hold on entry, then havoc the variables that are modified, assume the preconditions and then compile the body, then we assert the postconditions*)
 
-    (* let havoc_params = List.map ~f:(fun (x, _) -> Havoc x) S.meth.params in *)
-    (* let modified_variables = modified_block S.meth.body in
-    let havoc_params = List.map ~f:(fun x -> Havoc x) modified_variables in *)
-    (* let assert_preconditions = List.map ~f:(fun s -> Assert s) S.meth.requires in *)
-    let assume_preconditions = List.map ~f:(fun s -> Assume s) S.meth.requires in
+    (* let param_strings = List.dedup_and_sort ~compare:String.compare ((List.map ~f:(fun (x, _) -> x) S.meth.params)) in
+    (* add return parameter in the mapping *)
+    let fresh_params_mapping = (List.map ~f:(fun x -> (x, fresh_var (Utils.ty_exn (gamma ()) ~of_:x) ~hint:x)) param_strings) in
+    (* substitute all the params with fresh variables in the return statement *)
+    let subst_params_return_statement = List.fold_left ~f:(fun acc (x, t) -> Subst.aexp x (Var t) acc) ~init:S.meth.ret fresh_params_mapping in
+    (* before we can use the fresh params, we have to assume the values *)
+    (* let assume_fresh_params = List.map2_exn ~f:(fun (x, t) fresh_arg -> Assume (FComp (Eq, Var fresh_arg, Var x))) S.meth.params fresh_params in *)
+    let assume_fresh_params = List.map ~f:(fun (x, fresh_arg) -> Assume (FComp (Eq, Var fresh_arg, Var x))) fresh_params_mapping in
+    let havoc_params = List.map ~f:(fun (x, _) -> Havoc x) fresh_params_mapping in
+    (* this function substitutes occurances of all params with their values in a given formula *)
+    let rec subst_formula_params (cond: formula) (mapping: (string * string) list): formula = 
+      match mapping with
+      | [] -> cond
+      | (param, fresh_param)::xs -> Subst.formula param (Var fresh_param) (subst_formula_params cond xs)
+    in
+    (* substitute the method params with fresh variables in the preconditions *)
+    let pre_gs = List.map ~f:(fun f -> Assume (subst_formula_params f fresh_params_mapping)) S.meth.requires in
 
-    (* Logs.debug (fun m -> m "Assert Pre-conditions Callee:");
-    Logs.debug (fun m -> m "%a" Fmt.(vbox (list Pretty.gcom)) assert_preconditions); *)
-    Logs.debug (fun m -> m "Assume Pre-conditions Callee:");
-    Logs.debug (fun m -> m "%a" Fmt.(vbox (list Pretty.gcom)) assume_preconditions);
+    (* substitute all input params in postconditions *)
+    let subst_params_postconditions = List.map ~f:(fun f -> subst_formula_params f fresh_params_mapping) S.meth.ensures in
+    (* substitute the return param with the new return statement in the postconditions *)
+    let subst_return_param_postconditions = List.map ~f:(fun f -> Subst.formula (fst S.meth.returns) subst_params_return_statement f) subst_params_postconditions in
+    (* assert the postconditions *)
+    let post_gs = List.map ~f:(fun f -> Assert f) subst_return_param_postconditions in *)
+
+    (* compile method to guarded commands *)
+    (* here we have to convert the method into a list of statements *)
+    (* This is where the callee implementation will go*)
+    (* Here we have to assume pre-conditions and assert postconditions *)
+    (* first compile pre-conditions into gc *)
+    let pre_gs = List.map ~f:(fun s -> Assume s) S.meth.requires in
+
+    Logs.debug (fun m -> m "Pre-conditions Callee:");
+    Logs.debug (fun m -> m "%a" Fmt.(vbox (list Pretty.gcom)) pre_gs);
     (* then compile the body of the method into gc *)
     let body_gs =
       compile_block (S.meth.body)
@@ -299,12 +276,12 @@ struct
     Logs.debug (fun m -> m "Body Callee:");
     Logs.debug (fun m -> m "%a" Fmt.(vbox (list Pretty.gcom)) body_gs);
 
-    let assert_postconditions = List.map ~f:(fun s -> Assert (Subst.formula (fst S.meth.returns) S.meth.ret s)) S.meth.ensures in
+    let post_gs = List.map ~f:(fun s -> Assert (Subst.formula (fst S.meth.returns) S.meth.ret s)) S.meth.ensures in
 
     Logs.debug (fun m -> m "Post-conditions Callee:");
-    Logs.debug (fun m -> m "%a" Fmt.(vbox (list Pretty.gcom)) assert_postconditions);
-
-    let gs = assume_preconditions @ body_gs @ assert_postconditions in
+    Logs.debug (fun m -> m "%a" Fmt.(vbox (list Pretty.gcom)) post_gs);
+    let gs = pre_gs @ body_gs @ post_gs in
+    (* compile post-conditions as assert statements *)
     Logs.debug (fun m -> m "Guarded commands:");
     Logs.debug (fun m -> m "%a" Fmt.(vbox (list Pretty.gcom)) gs);
 

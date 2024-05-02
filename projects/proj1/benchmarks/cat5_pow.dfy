@@ -5,9 +5,9 @@ method pow(x: int, n: int) returns (r: int)
   requires x > 0 && n >= 0
 {
   var res : int;
+  var tmp_res : int;
   res := 1;
   if n > 0 {
-    var tmp_res : int;
     tmp_res := pow(x, n-1);
     res := x * tmp_res;
   }
