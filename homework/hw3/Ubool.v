@@ -14,29 +14,50 @@ Definition negu (u: ubool) : ubool :=
   end.
   
 (** Conjunction *)
-Definition andu (u1: ubool) (u2: ubool) : ubool.
-Admitted.
+Definition andu (u1: ubool) (u2: ubool) : ubool := 
+  match u1 with
+  | T => u2
+  | U => match u2 with
+    | F => F
+    | _ => U
+    end
+  | F => F
+  end.
   
 (** Disjunction *)
-Definition oru (u1: ubool) (u2: ubool) : ubool.
-Admitted.
+Definition oru (u1: ubool) (u2: ubool) : ubool :=
+  match u1 with
+  | T => T
+  | U => match u2 with
+    | T => T
+    | _ => U
+    end
+  | F => u2
+  end.
   
 Notation "x && y" := (andu x y).
 Notation "x || y" := (oru x y).
 Notation "- x" := (negu x).
 
 Theorem negu_negu: forall u, - - u = u.
-Proof.
-Admitted.
+Proof. 
+  destruct u.
+  - simpl. reflexivity.
+  - simpl. reflexivity.
+  - simpl. reflexivity.
 
 
 Theorem andu_self: forall u, u && u = u.
 Proof.
-Admitted.
+  destruct u.
+  - simpl. reflexivity.
+  - simpl. reflexivity.
+  - simpl. reflexivity.
 
 Theorem de_morgan_andu: forall u1 u2, - (u1 && u2) = - u1 || - u2.
-Proof.
-Admitted.
+Proof. Admitted.
+
+
 
 Theorem andu_comm: forall u1 u2, u1 && u2 = u2 && u1.
 Proof.
