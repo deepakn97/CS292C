@@ -1,0 +1,20 @@
+problem, grade
+Data and Functions, 2
+Proof by rewriting, 2
+Case analysis andb_true_elim2, 2
+Case analysis zero_nbeq_plus_1, 2
+More exercises, 2
+andu, 2
+oru, 2
+negu_negu, 2
+andu_self, 2
+de_morgan_andu, 2
+andu_comm, 2
+andu_assoc, 2
+oru_self, 2
+andu_distr_oru, 2
+NoDestruct de_morgan_oru, 2
+NoDestruct oru_self, 2
+NoDestruct oru_comm, 2
+NoDestruct oru_assoc, 2
+NoDestruct oru_distr_andu, 2
