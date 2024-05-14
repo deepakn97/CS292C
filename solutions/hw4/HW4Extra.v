@@ -36,11 +36,42 @@ Fixpoint rev {A: Type} (l: list A) : list A :=
   | x :: l' => rev l' ++ [x]
   end.
 
+Theorem app_assoc : forall {A: Type} (l1: list A) (l2: list A) (l3 : list A),
+  (l1 ++ l2) ++ l3 = l1 ++ (l2 ++ l3).
+Proof.
+  intros. induction l1 as [|l'].
+  - (* l1 = nil *)
+    reflexivity.
+  - (* l1 = cons n l1' *)
+    simpl. rewrite -> IHl1. reflexivity.
+Qed.
+
+Lemma app_nil_r: forall {A: Type} (l: list A),
+  l ++ [] = l.
+Proof.
+  intros.
+  induction l as [|l'].
+  - simpl. reflexivity.
+  - simpl. rewrite IHl. reflexivity.
+Qed.
+
+Lemma rev_distr: forall {A: Type} (l1: list A) (l2: list A),
+  rev(l1 ++ l2) = rev l2 ++ rev l1.
+Proof.
+  intros.
+  induction l1 as [|l1'].
+  - simpl. rewrite app_nil_r. reflexivity.
+  - simpl. rewrite IHl1. rewrite app_assoc. reflexivity.
+Qed.
+
 Theorem rev_involutive: forall {A: Type} (l: list A),
   rev (rev l) = l.
 Proof.
-Admitted.
-
+  intros.
+  induction l as [|l'].
+  - simpl. reflexivity.
+  - simpl. rewrite rev_distr. rewrite IHl. simpl. reflexivity.
+Qed.
 
 
 (* bring "&&" notation into scope *)
@@ -61,7 +92,14 @@ Theorem eqb_list_sound:
     (* show that the list equality is sound *)
     eqb_list eqb l1 l2 = true -> l1 = l2.
 Proof.
-Admitted.
+  intros.
+  induction l1 as [|l1'].
+  - induction l2 as [|l2'].
+    + reflexivity.
+    + discriminate.
+  - induction l2 as [|l2'].
+    + discriminate H0.
+    Admitted.
 
 End MyList.
 
@@ -86,7 +124,11 @@ Fixpoint flip {A: Type} (t: tree A) : tree A :=
 Theorem flip_involutive: forall {A: Type} (t: tree A),
   flip (flip t) = t.
 Proof.
-Admitted.
+  intros.
+  induction t.
+  - reflexivity.
+  - simpl. rewrite IHt1. rewrite IHt2. reflexivity.
+Qed.
 
 End BinaryTree.
 
@@ -118,7 +160,14 @@ Fixpoint flip {A: Type} (t: btree A) : btree A :=
 Theorem flip_involutive: forall {A: Type} (t: btree A),
   flip (flip t) = t.
 Proof.
-Admitted.
+  intros.
+  destruct t.
+  - reflexivity.
+  - induction ls as [|ls'].
+    + reflexivity.
+    + simpl. rewrite app_nil_r.
+    (* We cannot rewrite *)
+    Abort.
 
 End BTree.
 
@@ -140,9 +189,14 @@ Definition eqb_id (x1 x2 : id) :=
    as a function from id to A *)
 Definition total (A: Type) : Type := id -> A.
 
+Check total nat.
+
 (* Try defining the following function. If it's definable, prove that it is sound. If not, explain why you can't define it. *)
-Definition eqb_total {A: Type} (eqb: A -> A -> bool) (m1: total A) (m2: total A) : bool.
-Admitted.
+Definition eqb_total {A: Type} (eqb: A -> A -> bool) (m1: total A) (m2: total A) : bool :=
+  match m1, m2 with
+  | total 
+  | total a, total b => eqb a b
+
 
 Theorem eqb_total_sound: 
   forall {A: Type} (eqb: A -> A -> bool) m1 m2,
