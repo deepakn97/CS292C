@@ -50,13 +50,17 @@ struct
           Heuristics.random_unassigned vars s.a
           |> Option.value_exn ~error:(Error.of_string "No unassigned variable")
         in
+        (* let left_lit = Lit.make_pos left in
+        let right_lit = Lit.make_neg left in *)
         let right = Lit.negate left in
         try
           (* decide [left] and solve *)
           Logs.info (fun m -> m "Deciding %a" Lit.pp left);
           solve (State.decide s left)
         with Backtrack left_proof ->
-          Todo.part 1 "Dpll.solve: left branch unsat")
+          Logs.info (fun m -> m "Deciding %a" Lit.pp right);
+          solve (State.decide s right)
+      )
 
   (** Solving result *)
   let result : Solution.t =
