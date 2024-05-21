@@ -85,6 +85,10 @@ Fixpoint eqb_list {A: Type} (eqb: A -> A -> bool) (l1: list A) (l2: list A) : bo
   | _, _ => false
   end.
 
+Search(_ && _ = true).
+
+Search(_, _ -> _).
+
 Theorem eqb_list_sound: 
   forall {A: Type} (eqb: A -> A -> bool) l1 l2,
     (* assume the equality function for the element type is sound *)
@@ -92,14 +96,34 @@ Theorem eqb_list_sound:
     (* show that the list equality is sound *)
     eqb_list eqb l1 l2 = true -> l1 = l2.
 Proof.
+  intros A eqb l1.
+  induction l1 as [|x1 l1].
+  - destruct l2.
+    + reflexivity.
+    + simpl. discriminate.
+  - destruct l2 as [|x2 l2'].
+    + discriminate.
+    + simpl. intros H. rewrite andb_true_iff. intros H0. destruct H0.
+      apply H in H0. apply IHl1 in H1.
+      * rewrite H0. rewrite H1. reflexivity.
+      * apply H.
+Qed.
+
+(* Theorem eqb_list_sound: 
+  forall {A: Type} (eqb: A -> A -> bool) l1 l2,
+    (* assume the equality function for the element type is sound *)
+    (forall x y, eqb x y = true -> x = y) ->
+    (* show that the list equality is sound *)
+    eqb_list eqb l1 l2 = true -> l1 = l2.
+Proof.
   intros.
-  induction l1 as [|l1'].
-  - induction l2 as [|l2'].
+  induction l1 as [|x1 l1' IHl1].
+  - destruct l2 as [|x2 l2'].
     + reflexivity.
     + discriminate.
-  - induction l2 as [|l2'].
-    + discriminate H0.
-    Admitted.
+  - destruct l2 as [|x2 l2'].
+    + discriminate.
+    +  *)
 
 End MyList.
 
@@ -153,19 +177,40 @@ Fixpoint flip {A: Type} (t: btree A) : btree A :=
       *)
     node x (rev (map flip ls))
   end.
+(* Search rev map. *)
+
+(* map_rev: forall [A B : Type] (f : A -> B) (l : list A), map f (rev l) = rev (map f l) *)
+
+(* Search rev. *)
+
+(* Search map. *)
 
 (* Note: we haven't seen enough Coq to be able to prove this, but you should 
   at least try the proof, observe where things get stuck, and form your 
   hypothesis as to why the proof is stuck *)
+
+Lemma map_flip_involutive: forall {A: Type} (ls: list (btree A)),
+  map flip(map flip ls) = ls.
+Proof.
+  intros.
+  induction ls as [|ls'].
+  - reflexivity.
+  - simpl. (* Cyclic dependency of flip (flip t). If we don't use this lemma and directly write this induction in the flip_involutive, same problem occurs. *)
+  Abort.
+
 Theorem flip_involutive: forall {A: Type} (t: btree A),
   flip (flip t) = t.
 Proof.
   intros.
-  destruct t.
+  induction t.
   - reflexivity.
-  - induction ls as [|ls'].
+  - simpl. rewrite map_rev. rewrite rev_involutive. rewrite map_flip_involutive. reflexivity.
+  (* destruct t.
+  - reflexivity.
+  - simpl. rewrite map_rev. rewrite rev_involutive.
+    induction ls as [|ls'].
     + reflexivity.
-    + simpl. rewrite app_nil_r.
+    + simpl. *)
     (* We cannot rewrite *)
     Abort.
 
@@ -194,8 +239,9 @@ Check total nat.
 (* Try defining the following function. If it's definable, prove that it is sound. If not, explain why you can't define it. *)
 Definition eqb_total {A: Type} (eqb: A -> A -> bool) (m1: total A) (m2: total A) : bool :=
   match m1, m2 with
-  | total 
-  | total a, total b => eqb a b
+  | (id1 -> A), (id2 -> A) => eqb_id(id1, id2)
+(* I am not sure we can do pattern matching on m1 or m2. Since total just defines a mapping between a key of type id and a value of type A, the possible pairs can be infinite unless otherwise specified. Since a finite set or a inductive definition is not given, we cannot define this function. *)
+  end.
 
 
 Theorem eqb_total_sound: 
@@ -205,6 +251,7 @@ Theorem eqb_total_sound:
     (* show that the map equality is sound *)
     eqb_total eqb m1 m2 = true -> m1 = m2.
 Proof.
-Admitted.
+  intros.
+  Abort.
 
 End TotalMap.

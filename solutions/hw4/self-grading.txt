@@ -1,15 +1,15 @@
 problem, grade
 Nat to Bin and Back to Nat all exercises, 2
 Bin to Nat and Back to Bin all exercises, 2
-involution_injective, 0
-rev_injective, 0
-Partial Map all exercises, 0
-mumble_grumble, 0
-combine_checks, 0
-split, 0
-HW4Extra rev_involutive, 0
-HW4Extra eqb_list_sound, 0
-HW4Extra flip_involutive tree, 0
-HW4Extra flip_involutive btree, 0 
-HW4Extra eqb_total, 0
-HW4Extra eqb_sound, 0
+involution_injective, 2
+rev_injective, 2
+Partial Map all exercises, 2
+mumble_grumble, 2
+combine_checks, 2
+split, 2
+HW4Extra rev_involutive, 2
+HW4Extra eqb_list_sound, 2
+HW4Extra flip_involutive tree, 2
+HW4Extra flip_involutive btree, 1
+HW4Extra eqb_total, 1
+HW4Extra eqb_total_sound, 1
