@@ -1,0 +1,25 @@
+problem, grade
+logical connectives, 2
+programming with propositions, 2
+apply theorems to arguments, 2
+working with decidable properties, 2
+logic of coq, 2
+read_empty, 2
+eqb_false, 2
+write_eq, 2
+write_neq, 2
+map_extensionality, 2
+restrict_empty, 2
+restrict_read, 2
+write_restrict, 2
+restrict_write_true, 2
+restrict_equiv, 2
+ubool_none_decidable, 2
+andu, 2
+oru, 2
+andu_true, 2
+andu_false, 2
+andu_none_cases, 1
+andu_none, 1
+eval_empty, 2
+eval_none, 1

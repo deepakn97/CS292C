@@ -1,0 +1,301 @@
+DIGEST f949b7b1e342314bebd57eaa0522d80a
+FLF.HW4Extra
+R15:28 Coq.Lists.List <> <> lib
+R46:57 Coq.Init.Nat <> <> lib
+R75:87 Coq.Bool.Bool <> <> lib
+R105:110 Coq.Setoids.Setoid <> <> lib
+mod 122:127 <> MyList
+ind 141:144 MyList list
+constr 163:165 MyList nil
+constr 171:174 MyList cons
+binder 147:147 <> A:1
+R180:180 LF.HW4Extra <> A:1 var
+binder 177:177 <> x:4
+R187:190 LF.HW4Extra <> list:2 ind
+R192:192 LF.HW4Extra <> A:1 var
+binder 184:184 <> l:5
+scheme 141:144 MyList list_rect
+scheme 141:144 MyList list_ind
+scheme 141:144 MyList list_rec
+scheme 141:144 MyList list_sind
+R359:361 LF.HW4Extra MyList nil constr
+R359:361 LF.HW4Extra MyList nil constr
+R378:381 LF.HW4Extra MyList cons constr
+R378:381 LF.HW4Extra MyList cons constr
+R411:414 LF.HW4Extra MyList cons constr
+not 398:398 MyList :::x_'::'_x
+R496:498 LF.HW4Extra MyList nil constr
+not 487:487 MyList :::'['_']'
+R531:534 LF.HW4Extra MyList cons constr
+R542:545 LF.HW4Extra MyList cons constr
+R549:551 LF.HW4Extra MyList nil constr
+not 510:510 MyList :::'['_x_';'_'..'_';'_x_']'
+def 570:572 MyList app
+binder 575:575 <> A:6
+R589:592 LF.HW4Extra MyList list ind
+R594:594 LF.HW4Extra <> A:6 var
+binder 585:586 <> l1:7
+R602:605 LF.HW4Extra MyList list ind
+R607:607 LF.HW4Extra <> A:6 var
+binder 598:599 <> l2:8
+R612:615 LF.HW4Extra MyList list ind
+R617:617 LF.HW4Extra <> A:6 var
+R630:631 LF.HW4Extra <> l1:7 var
+R642:643 LF.HW4Extra MyList :::'['_']' not
+R648:649 LF.HW4Extra <> l2:8 var
+R656:659 LF.HW4Extra MyList :::x_'::'_x not
+R668:672 LF.HW4Extra MyList :::x_'::'_x not
+R683:683 LF.HW4Extra MyList :::x_'::'_x not
+R673:675 LF.HW4Extra <> app:9 def
+R681:682 LF.HW4Extra <> l2:8 var
+R715:717 LF.HW4Extra MyList app def
+not 702:702 MyList :::x_'++'_x
+def 791:793 MyList rev
+binder 796:796 <> A:11
+R809:812 LF.HW4Extra MyList list ind
+R814:814 LF.HW4Extra <> A:11 var
+binder 806:806 <> l:12
+R819:822 LF.HW4Extra MyList list ind
+R824:824 LF.HW4Extra <> A:11 var
+R837:837 LF.HW4Extra <> l:12 var
+R848:849 LF.HW4Extra MyList :::'['_']' not
+R854:855 LF.HW4Extra MyList :::'['_']' not
+R862:865 LF.HW4Extra MyList :::x_'::'_x not
+R878:881 LF.HW4Extra MyList :::x_'++'_x not
+R872:874 LF.HW4Extra <> rev:13 def
+R882:882 LF.HW4Extra MyList :::'['_x_';'_'..'_';'_x_']' not
+R884:884 LF.HW4Extra MyList :::'['_x_';'_'..'_';'_x_']' not
+prf 902:915 MyList rev_involutive
+binder 926:926 <> A:15
+R939:942 LF.HW4Extra MyList list ind
+R944:944 LF.HW4Extra <> A:15 var
+binder 936:936 <> l:16
+R961:963 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R950:952 LF.HW4Extra MyList rev def
+R955:957 LF.HW4Extra MyList rev def
+R959:959 LF.HW4Extra <> l:16 var
+R964:964 LF.HW4Extra <> l:16 var
+def 1064:1071 MyList eqb_list
+binder 1074:1074 <> A:17
+R1090:1093 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1089:1089 LF.HW4Extra <> A:17 var
+R1095:1098 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1094:1094 LF.HW4Extra <> A:17 var
+R1099:1102 Coq.Init.Datatypes <> bool ind
+binder 1084:1086 <> eqb:18
+R1110:1113 LF.HW4Extra MyList list ind
+R1115:1115 LF.HW4Extra <> A:17 var
+binder 1106:1107 <> l1:19
+R1123:1126 LF.HW4Extra MyList list ind
+R1128:1128 LF.HW4Extra <> A:17 var
+binder 1119:1120 <> l2:20
+R1133:1136 Coq.Init.Datatypes <> bool ind
+R1153:1154 LF.HW4Extra <> l2:20 var
+R1149:1150 LF.HW4Extra <> l1:19 var
+R1165:1166 LF.HW4Extra MyList :::'['_']' not
+R1169:1170 LF.HW4Extra MyList :::'['_']' not
+R1175:1178 Coq.Init.Datatypes <> true constr
+R1185:1188 LF.HW4Extra MyList :::x_'::'_x not
+R1195:1198 LF.HW4Extra MyList :::x_'::'_x not
+R1218:1221 Coq.Init.Datatypes <> ::bool_scope:x_'&&'_x not
+R1211:1213 LF.HW4Extra <> eqb:18 var
+R1222:1229 LF.HW4Extra <> eqb_list:21 def
+R1231:1233 LF.HW4Extra <> eqb:18 var
+R1255:1259 Coq.Init.Datatypes <> false constr
+prf 1277:1290 MyList eqb_list_sound
+binder 1304:1304 <> A:24
+R1320:1323 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1319:1319 LF.HW4Extra <> A:24 var
+R1325:1328 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1324:1324 LF.HW4Extra <> A:24 var
+R1329:1332 Coq.Init.Datatypes <> bool ind
+binder 1314:1316 <> eqb:25
+binder 1335:1336 <> l1:26
+binder 1338:1339 <> l2:27
+R1415:1415 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1451:1506 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+binder 1423:1423 <> x:28
+binder 1425:1425 <> y:29
+R1442:1445 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1435:1437 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R1428:1430 LF.HW4Extra <> eqb:25 var
+R1434:1434 LF.HW4Extra <> y:29 var
+R1432:1432 LF.HW4Extra <> x:28 var
+R1438:1441 Coq.Init.Datatypes <> true constr
+R1447:1449 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R1446:1446 LF.HW4Extra <> x:28 var
+R1450:1450 LF.HW4Extra <> y:29 var
+R1532:1535 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R1525:1527 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R1507:1514 LF.HW4Extra MyList eqb_list def
+R1523:1524 LF.HW4Extra <> l2:27 var
+R1520:1521 LF.HW4Extra <> l1:26 var
+R1516:1518 LF.HW4Extra <> eqb:25 var
+R1528:1531 Coq.Init.Datatypes <> true constr
+R1538:1540 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R1536:1537 LF.HW4Extra <> l1:26 var
+R1541:1542 LF.HW4Extra <> l2:27 var
+R1567:1572 LF.HW4Extra MyList <> mod
+mod 1585:1594 <> BinaryTree
+ind 1608:1611 BinaryTree tree
+constr 1631:1634 BinaryTree leaf
+constr 1640:1643 BinaryTree node
+binder 1614:1614 <> A:30
+R1649:1649 LF.HW4Extra <> A:30 var
+binder 1646:1646 <> a:33
+R1656:1659 LF.HW4Extra <> tree:31 ind
+R1661:1661 LF.HW4Extra <> A:30 var
+binder 1653:1653 <> l:34
+R1668:1671 LF.HW4Extra <> tree:31 ind
+R1673:1673 LF.HW4Extra <> A:30 var
+binder 1665:1665 <> r:35
+scheme 1608:1611 BinaryTree tree_rect
+scheme 1608:1611 BinaryTree tree_ind
+scheme 1608:1611 BinaryTree tree_rec
+scheme 1608:1611 BinaryTree tree_sind
+R1688:1691 LF.HW4Extra BinaryTree leaf constr
+R1688:1691 LF.HW4Extra BinaryTree leaf constr
+R1708:1711 LF.HW4Extra BinaryTree node constr
+R1708:1711 LF.HW4Extra BinaryTree node constr
+def 1728:1731 BinaryTree flip
+binder 1734:1734 <> A:36
+R1747:1750 LF.HW4Extra BinaryTree tree ind
+R1752:1752 LF.HW4Extra <> A:36 var
+binder 1744:1744 <> t:37
+R1757:1760 LF.HW4Extra BinaryTree tree ind
+R1762:1762 LF.HW4Extra <> A:36 var
+R1775:1775 LF.HW4Extra <> t:37 var
+R1786:1789 LF.HW4Extra BinaryTree leaf constr
+R1794:1794 LF.HW4Extra <> t:37 var
+R1800:1803 LF.HW4Extra BinaryTree node constr
+R1818:1821 LF.HW4Extra BinaryTree node constr
+R1835:1838 LF.HW4Extra <> flip:38 def
+R1826:1829 LF.HW4Extra <> flip:38 def
+prf 1859:1873 BinaryTree flip_involutive
+binder 1884:1884 <> A:40
+R1897:1900 LF.HW4Extra BinaryTree tree ind
+R1902:1902 LF.HW4Extra <> A:40 var
+binder 1894:1894 <> t:41
+R1921:1923 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R1908:1911 LF.HW4Extra BinaryTree flip def
+R1914:1917 LF.HW4Extra BinaryTree flip def
+R1919:1919 LF.HW4Extra <> t:41 var
+R1924:1924 LF.HW4Extra <> t:41 var
+R1949:1958 LF.HW4Extra BinaryTree <> mod
+mod 1971:1975 <> BTree
+ind 1989:1993 BTree btree
+constr 2012:2015 BTree leaf
+constr 2021:2024 BTree node
+binder 1996:1996 <> A:42
+R2030:2030 LF.HW4Extra <> A:42 var
+binder 2027:2027 <> a:45
+R2038:2041 Coq.Init.Datatypes <> list ind
+R2044:2048 LF.HW4Extra <> btree:43 ind
+R2050:2050 LF.HW4Extra <> A:42 var
+binder 2034:2035 <> ls:46
+scheme 1989:1993 BTree btree_rect
+scheme 1989:1993 BTree btree_ind
+scheme 1989:1993 BTree btree_rec
+scheme 1989:1993 BTree btree_sind
+R2066:2069 LF.HW4Extra BTree leaf constr
+R2066:2069 LF.HW4Extra BTree leaf constr
+R2086:2089 LF.HW4Extra BTree node constr
+R2086:2089 LF.HW4Extra BTree node constr
+def 2106:2109 BTree flip
+binder 2112:2112 <> A:47
+R2125:2129 LF.HW4Extra BTree btree ind
+R2131:2131 LF.HW4Extra <> A:47 var
+binder 2122:2122 <> t:48
+R2136:2140 LF.HW4Extra BTree btree ind
+R2142:2142 LF.HW4Extra <> A:47 var
+R2155:2155 LF.HW4Extra <> t:48 var
+R2166:2169 LF.HW4Extra BTree leaf constr
+R2174:2174 LF.HW4Extra <> t:48 var
+R2180:2183 LF.HW4Extra BTree node constr
+R2382:2385 LF.HW4Extra BTree node constr
+R2390:2392 Coq.Lists.List <> rev def
+R2395:2397 Coq.Lists.List <> map def
+R2399:2402 LF.HW4Extra <> flip:49 def
+prf 2621:2635 BTree flip_involutive
+binder 2646:2646 <> A:51
+R2659:2663 LF.HW4Extra BTree btree ind
+R2665:2665 LF.HW4Extra <> A:51 var
+binder 2656:2656 <> t:52
+R2684:2686 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R2671:2674 LF.HW4Extra BTree flip def
+R2677:2680 LF.HW4Extra BTree flip def
+R2682:2682 LF.HW4Extra <> t:52 var
+R2687:2687 LF.HW4Extra <> t:52 var
+R2712:2716 LF.HW4Extra BTree <> mod
+mod 2730:2737 <> TotalMap
+ind 2824:2825 TotalMap id
+constr 2841:2842 TotalMap Id
+R2849:2851 Coq.Init.Datatypes <> nat ind
+binder 2845:2845 <> n:55
+scheme 2824:2825 TotalMap id_rect
+scheme 2824:2825 TotalMap id_ind
+scheme 2824:2825 TotalMap id_rec
+scheme 2824:2825 TotalMap id_sind
+def 2867:2872 TotalMap eqb_id
+R2883:2884 LF.HW4Extra TotalMap id ind
+binder 2875:2876 <> x1:56
+binder 2878:2879 <> x2:57
+R2902:2903 LF.HW4Extra <> x2:57 var
+R2898:2899 LF.HW4Extra <> x1:56 var
+R2914:2915 LF.HW4Extra TotalMap Id constr
+R2921:2922 LF.HW4Extra TotalMap Id constr
+R2932:2935 Coq.Init.Nat <> ::nat_scope:x_'=?'_x not
+def 3066:3070 TotalMap total
+binder 3073:3073 <> A:60
+R3094:3097 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R3092:3093 LF.HW4Extra TotalMap id ind
+R3098:3098 LF.HW4Extra <> A:60 var
+def 3240:3248 TotalMap eqb_total
+binder 3251:3251 <> A:61
+R3267:3270 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R3266:3266 LF.HW4Extra <> A:61 var
+R3272:3275 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R3271:3271 LF.HW4Extra <> A:61 var
+R3276:3279 Coq.Init.Datatypes <> bool ind
+binder 3261:3263 <> eqb:62
+R3287:3291 LF.HW4Extra TotalMap total def
+R3293:3293 LF.HW4Extra <> A:61 var
+binder 3283:3284 <> m1:63
+R3301:3305 LF.HW4Extra TotalMap total def
+R3307:3307 LF.HW4Extra <> A:61 var
+binder 3297:3298 <> m2:64
+R3312:3315 Coq.Init.Datatypes <> bool ind
+prf 3337:3351 TotalMap eqb_total_sound
+binder 3365:3365 <> A:65
+R3381:3384 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R3380:3380 LF.HW4Extra <> A:65 var
+R3386:3389 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R3385:3385 LF.HW4Extra <> A:65 var
+R3390:3393 Coq.Init.Datatypes <> bool ind
+binder 3375:3377 <> eqb:66
+binder 3396:3397 <> m1:67
+binder 3399:3400 <> m2:68
+R3476:3476 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R3512:3566 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+binder 3484:3484 <> x:69
+binder 3486:3486 <> y:70
+R3503:3506 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R3496:3498 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R3489:3491 LF.HW4Extra <> eqb:66 var
+R3495:3495 LF.HW4Extra <> y:70 var
+R3493:3493 LF.HW4Extra <> x:69 var
+R3499:3502 Coq.Init.Datatypes <> true constr
+R3508:3510 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R3507:3507 LF.HW4Extra <> x:69 var
+R3511:3511 LF.HW4Extra <> y:70 var
+R3593:3596 Coq.Init.Logic <> ::type_scope:x_'->'_x not
+R3586:3588 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R3567:3575 LF.HW4Extra TotalMap eqb_total prfax
+R3584:3585 LF.HW4Extra <> m2:68 var
+R3581:3582 LF.HW4Extra <> m1:67 var
+R3577:3579 LF.HW4Extra <> eqb:66 var
+R3589:3592 Coq.Init.Datatypes <> true constr
+R3599:3601 Coq.Init.Logic <> ::type_scope:x_'='_x not
+R3597:3598 LF.HW4Extra <> m1:67 var
+R3602:3603 LF.HW4Extra <> m2:68 var
+R3628:3635 LF.HW4Extra TotalMap <> mod

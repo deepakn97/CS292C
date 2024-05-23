@@ -45,7 +45,7 @@ struct
   (** Learn the given conflict *)
   let learn_conflict (s : State.t) (c : Clause.t) (proof : Proof.t) : unit =
     if not (Queue.mem conflicts c ~equal:Clause.equal || Set.mem cset c) then (
-      (* Logs.debug (fun m -> m "Learning conflict: %a" Clause.pp c); *)
+      Logs.debug (fun m -> m "Learning conflict: %a" Clause.pp c);
       Heuristics.record_conflict s.h c;
       Int.incr restart_count;
       lemmas := Script.Lemma.make c proof :: !lemmas;
@@ -154,23 +154,38 @@ struct
   let sigma (c: Clause.t) (level: int) (literals: Lit.t list) (a: Assign.t): int =
     List.length (List.filter literals ~f:(fun lit -> (contains_var c lit) && (Assign.level_exn a lit) = level))
   
+  let sigma_val (c: Clause.t) (level: int) (literals: Lit.t list) (a: Assign.t): (int * Lit.t option) =
+    let filtered_lits = List.filter literals ~f:(fun lit -> (contains_var c lit) && (Assign.level_exn a lit) = level) in
+    let count = List.length filtered_lits in
+    if count = 1 then
+      let lit = List.hd_exn filtered_lits in
+      if Clause.contains c lit then (count, Some lit)
+      else (count, Some (Lit.negate lit))
+    else (count, None)
 
-  let rec calc_omega (idx: int) (c: Clause.t) (level: int) (implied: Lit.t list) (decision: Lit.t) (a: Assign.t) : Clause.t =
+  let rec calc_omega (idx: int) (c: Clause.t) (level: int) (implied: Lit.t list) (decision: Lit.t) (a: Assign.t) (previous_proof: Proof.t) : Clause.t * Proof.t =
     (* Logs.debug (fun m -> m ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"); *)
     (* Logs.debug (fun m -> m "Decision literal: %a" Lit.pp decision); *)
     (* Logs.debug (fun m -> m "Implied literals: %a" Fmt.(vbox @@ list Lit.pp) implied); *)
-    let sigma_val = sigma c level (decision::implied) a in
+    let sigma_val, olit = sigma_val c level (decision::implied) a in
+    let lit = Option.value_exn olit in
+    let decision_antecedent = get_antecedent a lit in
+    Logs.debug (fun m -> m "Decision literal: %a" Lit.pp lit);
+    Logs.debug (fun m -> m "Antecedent: %a" Clause.pp (Option.value_exn decision_antecedent));
     (* Logs.debug (fun m -> m "Decision level: %d; idx: %d -> %a" level idx Clause.pp c); *)
     (* Logs.debug (fun m -> m "Sigma value: %d" sigma_val); *)
-    if sigma_val = 1 then c
+    if sigma_val = 1 then (let final_proof = Proof.resolve ~left:previous_proof ~on:lit ~right:(Proof.fact (Option.value_exn (get_antecedent a lit))) in c, final_proof)
+    (* if sigma_val = 1 then c, previous_proof *)
     else (
       let selected = xi c implied a level in
       (* check if the list is still empty then return the current clause *)
       match selected with 
-      | None -> c
+      | None -> c, previous_proof
       | Some (l, ante) -> (
         let curr_omega = Clause.resolve_exn c l ante in 
-        calc_omega (idx+1) curr_omega level implied decision a
+        let right_proof = Proof.fact ante in
+        let curr_proof = Proof.resolve ~left:previous_proof ~on:l ~right:right_proof in
+        calc_omega (idx+1) curr_omega level implied decision a curr_proof
       )
     )
 
@@ -194,15 +209,16 @@ struct
       returning a conflict to learn, and a resolution proof of the conflict *)
   let analyze (level : int) (a : Assign.t) (unsat : Clause.t) :
       Clause.t * Proof.t * int =
-    (* Logs.debug (fun m ->
-        m "analyze: level = %d, unsat clause = %a" level Clause.pp unsat); *)
+    Logs.debug (fun m ->
+        m "analyze: level = %d, unsat clause = %a" level Clause.pp unsat);
     (* retrieve the decision and the trail of implied literals *)
     let { implied; decision } : Assign.Trail.t = Assign.trail_exn a level in
-    let conflict = calc_omega 1 unsat level implied decision a in
+    let initial_proof = Proof.fact unsat in
+    let conflict, proof = calc_omega 1 unsat level implied decision a initial_proof in
+    Logs.debug (fun m -> m "Initial Proof: %a" Proof.pp initial_proof);
+    Logs.debug (fun m -> m "Conflict: %a" Clause.pp conflict);
+    Logs.debug (fun m -> m "Proof: %a" Proof.pp proof);
     let beta = calc_beta conflict a in
-    let proof =
-      Todo.part 3 "Cdcl.analyze: proof" ~dummy:(Proof.fact Clause.empty)
-    in
     (conflict, proof, beta)
 
   exception Backtrack of int
@@ -221,26 +237,26 @@ struct
   (* let rec solve' (s0: State.t) (unr: Clause.t list) : State.t * (Clause.t list) = *)
 
   let rec solve_optimized (s0 : State.t) (cs: Clause.t list) : State.t =
-    (* Logs.debug (fun m -> m ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"); *)
-    (* Logs.debug (fun m -> m "Input state: %a" State.pp s0); *)
-    (* Logs.debug (fun m -> m "Learned conflicts:"); *)
-    (* Logs.debug (fun m ->
-        m "%a" Fmt.(vbox @@ list Clause.pp) (curr_conflicts ())); *)
+    Logs.debug (fun m -> m ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+    Logs.debug (fun m -> m "Input state: %a" State.pp s0);
+    Logs.debug (fun m -> m "Learned conflicts:");
+    Logs.debug (fun m ->
+        m "%a" Fmt.(vbox @@ list Clause.pp) (curr_conflicts ()));
 
     check_restart ();
 
     let r, a, unr = run_bcp s0.level s0.a (cs @ curr_conflicts ()) in
     (* update the assignment in the solver state *)
     let s = { s0 with a } in
-    (* Logs.debug (fun m -> m "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"); *)
-    (* Logs.debug (fun m -> m "State after unit-prop: %a" State.pp s); *)
+    Logs.debug (fun m -> m "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+    Logs.debug (fun m -> m "State after unit-prop: %a" State.pp s);
 
     match r with
     | Sat ->
         (* Logs.debug (fun m -> m "BCP: SAT"); *)
         s
     | Unsat c ->
-        (* Logs.debug (fun m -> m "BCP: Found unsat clause: %a" Clause.pp c); *)
+        Logs.debug (fun m -> m "BCP: Found unsat clause: %a" Clause.pp c);
         let c, proof, beta = analyze s.level s.a c in
         (* Logs.debug (fun m -> m "Beta: %d" beta); *)
         learn_conflict s c proof;
